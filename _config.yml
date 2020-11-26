@@ -1,21 +1,20 @@
 # Site settings
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: https://karimali.ca # the base hostname & protocol for your site
+url: https://shugelei.com # the base hostname & protocol for your site
 
 # User settings
-title: Karim Ali
-email: karim.ali@ualberta.ca
-group: The Maple Lab
-groupweb: https://github.com/themaplelab
-dept: Computing Science
-deptweb: https://cs.ualberta.ca
-institution: University of Alberta
-institutionweb: https://ualberta.ca
-address: ATH 3-42
-twitter: karimhamdanali
-github: karimhamdanali
-dblp: Ali_0001:Karim
-gscholar: TC8495oAAAAJ
+title: Shuge Lei
+email: slei@email.sc.edu
+group: AISys
+groupweb: https://pooyanjamshidi.github.io/AISys/
+dept: Computing Science and Engineering
+deptweb: https://cse.sc.edu/
+institution: University of South Carolina
+institutionweb: https://www.sc.edu/
+address: Storey Innovation Center
+addressweb:https://www.cse.sc.edu/contact
+twitter: ShugeLei
+github: Shugelei
 
 # Build settings
 markdown: kramdown
@@ -25,8 +24,8 @@ paginate_path: /news/page:num/
 excerpt_separator: <!--more-->
 
 # Site-wide variables
-keywords: program analysis, compiler, static analysis, java, scala, call graphs, averroes
-copyright: Copyright (c) Karim Ali
+keywords: python, deep learning, transfer learning, machine learning system, compiler, static analysis
+copyright: Copyright (c) Shuge Lei
 
 # Plugins
 plugins:
