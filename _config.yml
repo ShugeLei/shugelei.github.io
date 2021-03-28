@@ -3,7 +3,8 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 url: https://shugelei.github.io/ # the base hostname & protocol for your site
 
 # User settings
-title: Shuge Lei
+name: Shuge Lei
+title: Doctoral Student
 email: slei@email.sc.edu
 group: AISys
 groupweb: https://pooyanjamshidi.github.io/AISys/
