@@ -1,6 +1,6 @@
 # Site settings
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: https://shugelei.com # the base hostname & protocol for your site
+url: https://shugelei.github.io/ # the base hostname & protocol for your site
 
 # User settings
 title: Shuge Lei
