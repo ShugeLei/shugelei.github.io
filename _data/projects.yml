@@ -8,7 +8,7 @@
 #   impact:
   
 - name: Physics-informed Machine Learning
-  id: averroes
+  id: PINN
   github:
   start: 2020
   members: shuge,kimia
