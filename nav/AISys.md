@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Students
+title: AISys Lab
 permalink: /maplers/
 weight: 2
-group: students
+group: lab
 ---
 
 <figure>
