@@ -13,7 +13,7 @@ Here is my short [CV][cvpdf]{:target="_blank"}.
 [cvpdf]: {{ "/resources/docs/shuge_cv.pdf" | prepend: site.baseurl }}
 
 
-# Below is a list of my current and inactive projects.
+## Below is a list of my current and inactive projects.
 
 ### Current Projects
 {% assign current = site.data.projects | where_exp: "project", "project.end == nil" %}
@@ -22,7 +22,3 @@ Here is my short [CV][cvpdf]{:target="_blank"}.
 ### Inactive Projects
 {% assign inactive = site.data.projects | where_exp: "project", "project.end != nil" %}
 {% include projects.html data=inactive %}
-
-
-
-
