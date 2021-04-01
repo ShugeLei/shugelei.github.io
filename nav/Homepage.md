@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Homepage
-permalink: /cv/
+permalink: /homepage/
 weight: 1
 ---
 I am currently a doctoral student in the Computer Science and Engineering department at the University of South Carolina. I am working as a research assistant in the [AISys lab](https://pooyanjamshidi.github.io/AISys/) led by [Dr.Jamshidi](https://pooyanjamshidi.github.io/){:target="_blank"}. My research interests lie in the machine learning system, self-supervised learning, transfer learning, and the application of machine learning in healthcare. 
