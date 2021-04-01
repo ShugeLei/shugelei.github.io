@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Papers
+title: Reading Papers
 permalink: /papers/
-weight: 3
+weight: 2
 group: pubs
 ---
 
