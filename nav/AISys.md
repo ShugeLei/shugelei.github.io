@@ -7,7 +7,7 @@ group: lab
 ---
 
 <figure>
-	<img style="display=inline-block" width="15%" src="{{ "/resources/images/maple.png" |  prepend: site.baseurl }}" alt="The Maple Lab" />
+	<img style="display=inline-block" width="15%" src="{{ "/resources/images/AIsys.png" |  prepend: site.baseurl }}" alt="The Maple Lab" />
 </figure>
 
 Maplers are members of my research lab (Maple), including master's and doctoral students, as well as undergrad research assistants. I'm always looking for new students (on all levels) to expand my group.
