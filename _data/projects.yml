@@ -7,11 +7,10 @@
 #   description: Can research in programming languages help with machine learning? In this work, we are exploring how to use/develop programming language techniques to solve some of the common problems that researchers and practicioners encounter while building machine learning systems.
 #   impact:
   
-- name: Partial-Program Analysis for Java
+- name: Physics-informed Machine Learning
   id: averroes
   github:
-  start: 2010
-  members: seekatz,mappel
-  papers: phd-thesis,averroes,cgc
-  description: Can we perform whole-program analysis of a given Java application without analyzing the whole program? Through light-weight static analyses of the structure of a given application, we have shown that the answer to this question is 'yes'. Moreover, we developed Averroes, a placeholder library generator that enables the use of that suite in any Java whole-program analysis framework. Using Averroes reduces the amount of code that needs to be analyzed by up to 600x, improving the performance of call graph analysis as it becomes up to 7x faster, and uses up to 6x less memory.
-  impact: Averroes is currently used by the major Java static analysis frameworks, <a href="https://github.com/Sable/soot/wiki/Extensions-to-Soot" target="_blank">Soot</a>, <a href="https://github.com/wala/WALA/wiki/WALA-Based-Tools" target="_blank">WALA</a>, and <a href="https://bitbucket.org/yanniss/doop" target="_blank">DOOP</a>.
+  start: 2020
+  members: shuge,kimia
+  #papers: phd-thesis,averroes,cgc
+  description: Develop a physics-informed deep learning framework that enables multi-fidelity modeling, and uncertainty quantification to bridge inputs, e.g. materials properties and process conditions to outputs, e.g. fluid velocity and pressure distributions and melt pool dimensions. Generate a data-driven model that expresses essential theoretical understandings and reproduces the predictive capability from both computational and experimental data.
