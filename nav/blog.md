@@ -2,7 +2,7 @@
 layout: default
 title: Blog
 permalink: /blog/
-weight: 7
+weight: 4
 group: blog
 ---
 <ul class="post-list">
