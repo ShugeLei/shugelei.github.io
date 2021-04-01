@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Books
-permalink: /maplers/
+permalink: /books/
 weight: 5
 group: lab
 ---
