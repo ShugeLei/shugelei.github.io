@@ -10,11 +10,12 @@ group: lab
 	<img style="display=inline-block" width="15%" src="{{ "/resources/images/book.jpeg" |  prepend: site.baseurl }}" alt="Book Reading" />
 </figure>
 
-Here are the list of some books.
+Here are some booke lists .
 
 
 
 ### Plan to Read
+
 
 ### Current Reading
 
