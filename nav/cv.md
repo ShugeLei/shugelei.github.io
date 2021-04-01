@@ -8,5 +8,8 @@ I am currently a doctoral student in the Computer Science and Engineering depart
 
 Before joining the UofSC, I received my bachelor's degree in Statistics and Finance at the Southwestern University of Finance and Economics and a master's degree in Hospital Management at Tsinghua University. I am interested in technology, business, finance, and sports(never cooking); love kids and reading.
 
-Here is my short [CV].
+Here is my short [CV][cvpdf]{:target="_blank"}.
+
+[cvpdf]: {{ "/resources/docs/shuge_cv.pdf" | prepend: site.baseurl }}
+
 
