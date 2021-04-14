@@ -5,7 +5,16 @@ permalink: /papers/
 weight: 2
 group: pubs
 ---
-##Machine Learning System
+### Transformers
+1.['Pretrained Transformers As Universal Computation Engines'](https://arxiv.org/pdf/2103.05247.pdf)\
+#Notes:\
+
+
+
+
+
+###Machine Learning Systems
+
 
 
 
