@@ -10,7 +10,7 @@ Before joining the UofSC, I received my bachelor's degree in Statistics and Fina
 
 Here is my short [CV][cvpdf]{:target="_blank"}.
 
-[cvpdf]: {{ "/resources/docs/shuge_cv.pdf" | prepend: site.baseurl }}
+[cvpdf]: {{ "/resources/docs/Shuge LEI_CV_Apr21.pdf" | prepend: site.baseurl }}
 
 
 ## Below is a list of my current and inactive projects.
