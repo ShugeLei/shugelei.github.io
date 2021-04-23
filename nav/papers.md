@@ -6,9 +6,9 @@ weight: 2
 group: pubs
 ---
 ### Transformers
-1.['Neural Machine Translation by Jointly Learning to Align and Translate'](https://arxiv.org/abs/1409.0473)
+1.['Neural Machine Translation by Jointly Learning to Align and Translate'](https://arxiv.org/abs/1409.0473)\
 Notes:
-2.['Pretrained Transformers As Universal Computation Engines'](https://arxiv.org/pdf/2103.05247.pdf)
+2.['Pretrained Transformers As Universal Computation Engines'](https://arxiv.org/pdf/2103.05247.pdf)\
 Notes:
 
 ### Transfer Learning
@@ -34,7 +34,7 @@ Notes:
 
 ### Machine Learning Systems
 Below are some resources to learn about machine leanring system, not limited in papers.
-1. ['CSE 599W - Systems for ML'](http://dlsys.cs.washington.edu/) by Tianqi Chen, University of Washington.
+1. ['CSE 599W - Systems for ML'](http://dlsys.cs.washington.edu/) by Tianqi Chen, University of Washington.\
    Course notes(https://zhuanlan.zhihu.com/p/104649426)
 2. ['CS 329S: Machine Learning Systems Design'](https://stanford-cs329s.github.io/syllabus.html)
 
