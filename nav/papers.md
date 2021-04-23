@@ -8,9 +8,8 @@ group: pubs
 ### Transformers
 1.['Neural Machine Translation by Jointly Learning to Align and Translate'](https://arxiv.org/abs/1409.0473)
 Notes:
-*
 2.['Pretrained Transformers As Universal Computation Engines'](https://arxiv.org/pdf/2103.05247.pdf)
-#### Notes:
+Notes:
 
 ### Transfer Learning
 1. ['Self-taught Learning: Transfer Learning from Unlabeled Data'](https://dl.acm.org/doi/pdf/10.1145/1273496.1273592)
