@@ -7,7 +7,7 @@ group: pubs
 ---
 ### Transformers
 1.['Neural Machine Translation by Jointly Learning to Align and Translate'](https://arxiv.org/abs/1409.0473)\
-Notes:
+Notes:\
 2.['Pretrained Transformers As Universal Computation Engines'](https://arxiv.org/pdf/2103.05247.pdf)\
 Notes:
 
