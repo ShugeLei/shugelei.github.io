@@ -1,0 +1,444 @@
+:root {
+  --paper: #FCFCFA;
+  --ink: #1C1B18;
+  --ink-soft: #57554E;
+  --line: #E4E2DB;
+  --link: #2B4ACB;
+  --link-wash: #EEF1FC;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 19px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--link-wash); color: var(--link); }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 1px; }
+
+.mono {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.wrap { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+
+/* The wandering dot's canvas — fixed behind everything, non-interactive */
+#wanderer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* The bubble cursor and its ripples ride above the page instead of behind
+   it, so a burst reads over the text. Created by site.js only when there is
+   a real pointer and motion is allowed — otherwise the native cursor stays.
+   The !important is needed to beat cursor:pointer on links and buttons. */
+#surface {
+  position: fixed;
+  inset: 0;
+  z-index: 90;          /* above the lightbox, so the bubble is never hidden */
+  pointer-events: none;
+}
+html.bubble-cursor, html.bubble-cursor * { cursor: none !important; }
+
+/* Full view of a header photo, opened by clicking it. The small frames crop
+   hard; this is the uncropped image. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vh 5vw;
+  background: rgba(28, 27, 24, 0.88);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.lightbox[hidden] { display: none; }   /* beats display:flex above */
+.lightbox.shown { opacity: 1; }
+.lightbox figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 100%;
+  max-height: 100%;
+}
+.lightbox img {
+  display: block;
+  max-width: 100%;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 2px;
+}
+.lightbox figcaption { color: rgba(252, 252, 250, 0.72); text-align: center; }
+.lightbox .fig-no { color: rgba(252, 252, 250, 0.5); }
+
+/* Fig. 0 — the hidden author portrait, revealed by clicking the name */
+button.wordmark {
+  background: none;
+  border: none;
+  font: inherit;
+  font-weight: 500;
+  font-size: 1rem;
+  font-family: "Newsreader", Georgia, serif;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0;
+}
+button.wordmark:hover { color: var(--link); }
+button.wordmark:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 1px; }
+.dagger {
+  color: var(--link);
+  font-size: 0.7em;
+  margin-left: 2px;
+}
+/* The name is a link home; the dagger beside it is its own button, so the
+   two affordances sit together without one swallowing the other. */
+.wordmark-group { white-space: nowrap; }
+.dagger-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+}
+.dagger-btn:hover .dagger { text-decoration: underline; text-underline-offset: 2px; }
+.dagger-btn:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 1px; }
+header { position: relative; }
+.fig0 {
+  position: absolute;
+  top: calc(100% - 6px);
+  left: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 10px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: 0 8px 28px rgba(28, 27, 24, 0.09);
+  width: 168px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.fig0.shown { opacity: 1; transform: translateY(0); }
+/* Fig. 1 hangs off the nav on the right instead of the wordmark on the left.
+   The img selector needs both classes to outrank ".fig0 img" further down. */
+.fig-bugs { left: auto; right: 0; }
+.fig0.fig-bugs img { aspect-ratio: 4 / 3; }
+.fig0 img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+  filter: saturate(0.92);
+}
+.fig0 figcaption {
+  margin-top: 8px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ---------- header ---------- */
+header { padding: 28px 0; }
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.wordmark { color: var(--ink); font-weight: 500; font-size: 1rem; }
+.wordmark:hover { text-decoration: none; color: var(--link); }
+nav { display: flex; gap: 22px; align-items: baseline; flex-wrap: wrap; }
+/* nowrap keeps "off-hours" from breaking across two lines on a phone */
+nav a, .nav-btn { color: var(--ink-soft); text-transform: lowercase; white-space: nowrap; }
+nav a:hover, .nav-btn:hover { color: var(--link); text-decoration: none; }
+/* "bugs" is a button, not a link — it toggles Fig. 1 instead of navigating.
+   These rules strip the native button chrome so it reads as a nav item. */
+.nav-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+/* ---------- hero ---------- */
+.hero { padding: 72px 0 56px; }
+.hero h1 {
+  font-size: clamp(2.1rem, 6vw, 2.9rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+}
+.hero h1 em { font-style: italic; font-weight: 400; }
+.hero p { color: var(--ink-soft); max-width: 54ch; }
+.hero p + p { margin-top: 14px; }
+.hero .links {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+/* signature: loss curve */
+.loss { margin-top: 44px; display: flex; align-items: flex-end; gap: 14px; }
+.loss svg { display: block; overflow: visible; }
+.loss-path {
+  fill: none;
+  stroke: var(--link);
+  stroke-width: 1.5;
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: draw 2.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+}
+.loss-axis { stroke: var(--line); stroke-width: 1; }
+.loss-dot { fill: var(--link); opacity: 0; animation: appear 0.4s ease 2.5s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes appear { to { opacity: 1; } }
+.loss-caption { color: var(--ink-soft); padding-bottom: 2px; }
+
+/* ---------- sections ---------- */
+section { padding: 40px 0; border-top: 1px solid var(--line); }
+.section-label {
+  color: var(--ink-soft);
+  font-size: 0.72rem;      /* h2 now, so cancel the UA heading size/weight */
+  font-weight: 400;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 28px;
+}
+
+/* papers */
+.paper { margin-bottom: 30px; }
+.paper:last-child { margin-bottom: 0; }
+.paper-title { font-size: 1.12rem; font-weight: 500; line-height: 1.4; }
+.paper-title a { color: var(--ink); }
+.paper-title a:hover { color: var(--link); text-decoration: none; }
+.paper-meta { margin-top: 4px; color: var(--ink-soft); }
+.paper-meta .venue { color: var(--link); }
+.paper-note { margin-top: 6px; color: var(--ink-soft); font-size: 0.95rem; max-width: 56ch; }
+
+/* writing list */
+.post {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+}
+.post:last-child { border-bottom: none; }
+.post-date { color: var(--ink-soft); flex-shrink: 0; width: 84px; }
+.post-title { font-size: 1.08rem; font-weight: 500; }
+.post-title a { color: var(--ink); }
+.post-title a:hover { color: var(--link); text-decoration: none; }
+
+/* ---------- article page ---------- */
+article { padding: 56px 0 48px; }
+.post-meta { color: var(--ink-soft); display: flex; gap: 16px; margin-bottom: 18px; }
+article h1 {
+  font-size: clamp(1.9rem, 5.5vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 44px;
+}
+.prose { line-height: 1.7; }
+.prose > * + * { margin-top: 1.2em; }
+.prose > p:first-child em:only-child {
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+}
+.prose h2 { font-size: 1.25rem; font-weight: 600; margin-top: 2em; line-height: 1.35; }
+.prose h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.6em; }
+.prose ul, .prose ol { padding-left: 1.4em; }
+.prose li + li { margin-top: 0.4em; }
+.prose blockquote {
+  border-left: 2px solid var(--link);
+  padding-left: 20px;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+.prose code {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.82em;
+  background: var(--link-wash);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.prose pre {
+  background: #F4F3EF;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+.prose pre code { background: none; padding: 0; font-size: 0.78rem; }
+.prose img { max-width: 100%; height: auto; }
+.prose hr { border: none; text-align: center; margin: 2.4em 0; }
+.prose hr::after {
+  content: "· · ·";
+  color: var(--ink-soft);
+  letter-spacing: 0.6em;
+  font-size: 0.9rem;
+}
+
+/* ---------- off-hours ---------- */
+.figures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.figures figure { margin: 0; }
+.figures img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  display: block;
+}
+.figures figcaption {
+  margin-top: 8px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.fig-no { color: var(--link); }
+
+.now {
+  margin-top: 36px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+.now-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  padding: 6px 0;
+}
+.now-row > :last-child { color: var(--ink-soft); font-size: 1rem; }
+/* Stack multiple values under one label so they share a left edge */
+.now-values { display: flex; flex-direction: column; gap: 2px; }
+.now-label {
+  color: var(--link);
+  flex-shrink: 0;
+  width: 84px;
+  text-transform: lowercase;
+}
+
+.strip {
+  margin-top: 36px;
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+/* Intro line above the photo strip — same top rule as .now / .changelog */
+.strip-intro {
+  margin: 36px 0 0;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  color: var(--ink-soft);
+}
+.strip-intro + .strip { margin-top: 14px; }
+
+/* Thumb size lives here — figure and img share it so captions wrap
+   to the image width instead of stretching the figure to one long line. */
+.strip { --thumb: 152px; }
+.strip figure { margin: 0; flex-shrink: 0; width: var(--thumb); }
+.strip img {
+  width: var(--thumb);
+  height: var(--thumb);
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  display: block;
+}
+.strip figcaption {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 540px) {
+  .figures { grid-template-columns: 1fr; }
+  .now-row { flex-direction: column; gap: 2px; }
+  .now-label { width: auto; }
+}
+
+/* Changelog — one-line state changes, CalVer versioned */
+.changelog {
+  margin-top: 36px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+.changelog-label {
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 14px;
+}
+.log-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  padding: 6px 0;
+}
+.log-v { color: var(--link); flex-shrink: 0; width: 84px; }
+.log-row > span:last-child { color: var(--ink-soft); font-size: 1rem; }
+
+/* ---------- footer ---------- */
+/* Sticky footer. On a short page (a one-paragraph post) the footer sits at
+   the bottom of the viewport instead of floating mid-screen. On a long page
+   this does nothing — the content pushes it past the fold as usual.
+   #wanderer is position:fixed, so it stays out of this flex flow. */
+body { min-height: 100vh; display: flex; flex-direction: column; }
+/* width:100% is load-bearing: as a column flex item with `margin: 0 auto`,
+   .wrap would otherwise size to its content and stay 680px wide on a phone,
+   pushing the page sideways. */
+.wrap { flex: 1; display: flex; flex-direction: column; width: 100%; }
+.wrap > footer { margin-top: auto; }
+
+footer, .post-footer { border-top: 1px solid var(--line); padding: 28px 0 56px; color: var(--ink-soft); }
+.footer-row, .post-footer-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 540px) {
+  .post { flex-direction: column; gap: 2px; }
+  .post-date { width: auto; }
+  .hero { padding-top: 52px; }
+  nav { gap: 14px; }
+}
+
+/* Below ~430px the name plus four nav items no longer fit on one line, and
+   only "bugs" would wrap — an orphan. Drop the whole nav to its own row so
+   the break looks deliberate. */
+@media (max-width: 430px) {
+  .header-row { flex-wrap: wrap; gap: 8px 16px; }
+  nav { gap: 16px; }
+}
