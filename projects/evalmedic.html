@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EvalMedic — Shuge Lei</title>
+<meta name="description" content="EvalMedic is a diagnosis-and-decision layer for LLM and agent evaluation systems: counterfactual regression triage, evaluator calibration, adaptive planning, and benchmark maintenance.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EvalMedic: Diagnosing Evaluation Regressions After the Red Metric">
+<meta property="og:description" content="An evaluation infrastructure project for separating model regressions from changes in prompts, tools, runtimes, data, harnesses, and graders.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+  .project-hero { padding: 58px 0 42px; }
+  .project-kicker { color: var(--link); text-transform: uppercase; margin-bottom: 14px; }
+  .project-hero h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.08; font-weight: 500; letter-spacing: -0.015em; }
+  .project-deck { margin-top: 16px; color: var(--ink-soft); font-size: 1.08rem; max-width: 58ch; }
+  .project-links { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 24px; }
+  .status-pill { display: inline-block; margin-top: 22px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-soft); }
+  .project-section { padding: 34px 0; border-top: 1px solid var(--line); }
+  .project-section h2 { font-size: 1.45rem; font-weight: 500; margin-bottom: 14px; }
+  .project-section h3 { font-size: 1.06rem; font-weight: 500; margin: 22px 0 7px; }
+  .project-section p { color: var(--ink-soft); margin-top: 10px; }
+  .project-section p strong { color: var(--ink); font-weight: 500; }
+  .thesis { font-size: 1.24rem; line-height: 1.5; color: var(--ink) !important; border-left: 2px solid var(--link); padding-left: 18px; margin: 22px 0 4px; }
+  .module-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 24px 0; }
+  .module { border: 1px solid var(--line); padding: 18px; border-radius: 4px; background: rgba(255,255,255,0.35); }
+  .module .module-no { color: var(--link); text-transform: uppercase; }
+  .module h3 { margin: 7px 0 4px; font-size: 1.12rem; }
+  .module p { margin: 0; line-height: 1.45; }
+  .architecture { display: grid; grid-template-columns: 1fr auto 1.15fr auto 1fr; align-items: stretch; gap: 10px; margin: 24px 0; }
+  .architecture-box { border: 1px solid var(--line); border-radius: 4px; padding: 16px; background: #fff; }
+  .architecture-box strong { display: block; margin-bottom: 7px; font-weight: 500; }
+  .architecture-box span { color: var(--ink-soft); line-height: 1.4; }
+  .architecture-arrow { align-self: center; color: var(--link); font-size: 1.4rem; }
+  .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 24px 0 10px; }
+  .metric { border: 1px solid var(--line); padding: 16px; border-radius: 4px; background: rgba(255,255,255,0.35); }
+  .metric .value { display: block; font-size: 1.85rem; line-height: 1.1; color: var(--ink); font-weight: 500; }
+  .metric .label { display: block; margin-top: 7px; color: var(--ink-soft); line-height: 1.35; }
+  .result-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.9rem; }
+  .result-table th, .result-table td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .result-table th { color: var(--ink-soft); font-weight: 500; }
+  .pipeline { margin: 20px 0; padding: 18px; border: 1px solid var(--line); background: #fff; border-radius: 4px; white-space: pre-wrap; color: var(--ink-soft); line-height: 1.55; overflow-x: auto; }
+  .next-list { margin: 12px 0 0 22px; color: var(--ink-soft); }
+  .next-list li { margin: 8px 0; }
+  .callout { border: 1px solid var(--line); background: rgba(255,255,255,0.35); padding: 16px 18px; border-radius: 4px; margin: 22px 0; color: var(--ink-soft); }
+  .back { margin: 28px 0 56px; }
+  @media (max-width: 720px) {
+    .module-grid, .metric-grid { grid-template-columns: 1fr; }
+    .architecture { grid-template-columns: 1fr; }
+    .architecture-arrow { transform: rotate(90deg); justify-self: center; }
+    .result-table { font-size: 0.78rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="header-row">
+      <a class="wordmark" href="../index.html">Shuge Lei</a>
+      <nav class="mono"><a href="../index.html#research">research</a><a href="../index.html#writing">writing</a></nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="project-hero">
+      <div class="project-kicker mono">evaluation infrastructure · agent reliability · 2026</div>
+      <h1>EvalMedic: Diagnosing Evaluation Regressions After the Red Metric</h1>
+      <p class="project-deck">A diagnosis-and-decision layer above existing LLM and agent evaluation stacks. EvalMedic asks what changed, why the metric moved, whether the measurement is still trustworthy, and what evidence to collect next.</p>
+      <div class="project-links mono">
+        <a href="https://github.com/ShugeLei/evalmedic">github repo</a>
+        <a href="#design">system design</a>
+        <a href="#validation">validation plan</a>
+      </div>
+      <span class="status-pill mono">V0.1 design complete · implementation in progress</span>
+    </div>
+
+    <section class="project-section">
+      <h2>The problem after evaluation</h2>
+      <p>Modern evaluation tools are increasingly good at running suites, logging traces, scoring outputs, comparing experiments, and showing that a metric changed. The difficult work often begins after that dashboard turns red.</p>
+      <p class="thesis">Did the model regress, or did the prompt, tool, runtime, data, harness, rubric, or grader change the measurement?</p>
+      <p>An evaluation engineer must usually answer this through manual trace inspection and ad hoc reruns. EvalMedic turns that second-order debugging work into versioned measurement metadata, controlled replay experiments, explicit evidence, and calibrated abstention.</p>
+      <div class="callout"><strong>Positioning:</strong> EvalMedic is not a new general-purpose eval runner and does not replace Inspect AI, LangSmith, Braintrust, OpenAI Evals, or internal infrastructure. It consumes their artifacts and focuses on the decisions they leave to engineers.</div>
+    </section>
+
+    <section class="project-section" id="design">
+      <h2>Four maintenance questions</h2>
+      <div class="module-grid">
+        <article class="module">
+          <span class="module-no mono">01 · plan</span>
+          <h3>Adaptive Eval Planner</h3>
+          <p>What is the smallest informative subset to run for this release, and when is more evidence required?</p>
+        </article>
+        <article class="module">
+          <span class="module-no mono">02 · diagnose</span>
+          <h3>Counterfactual Regression Triage</h3>
+          <p>Does the failure persist when one component is frozen or swapped? Rank supported root-cause hypotheses and abstain when interactions prevent identification.</p>
+        </article>
+        <article class="module">
+          <span class="module-no mono">03 · calibrate</span>
+          <h3>Evaluator Drift Calibration</h3>
+          <p>When a judge, rubric, or grader prompt changes, are historical and current scores still comparable across important slices?</p>
+        </article>
+        <article class="module">
+          <span class="module-no mono">04 · maintain</span>
+          <h3>Benchmark Maintenance</h3>
+          <p>Should a production failure be promoted, merged, retained as a diagnostic, or retired without allowing the suite to bloat?</p>
+        </article>
+      </div>
+
+      <h3>Architecture: an overlay, not a replacement</h3>
+      <div class="architecture" role="img" aria-label="Existing evaluation stack sends traces and metadata into EvalMedic, which produces evidence for human decisions">
+        <div class="architecture-box"><strong>Existing eval stack</strong><span>runs · traces · scores · production failures</span></div>
+        <div class="architecture-arrow" aria-hidden="true">→</div>
+        <div class="architecture-box"><strong>Versioned measurement manifest</strong><span>model · prompt · tools · runtime · data · evaluator · cost</span></div>
+        <div class="architecture-arrow" aria-hidden="true">→</div>
+        <div class="architecture-box"><strong>EvalMedic evidence</strong><span>ranked causes · drift warnings · next tests · human escalation</span></div>
+      </div>
+      <p>The key design requirement is that every run carries a measurement manifest. Without explicit versions for the model, prompt/scaffold, tools, runtime, data, harness, and evaluator, root-cause attribution is often impossible.</p>
+    </section>
+
+    <section class="project-section" id="validation">
+      <h2>V0.1: controlled diagnosis before broad claims</h2>
+      <p>The first release deliberately narrows the system to the parts with clear ground truth: a canonical schema, controlled perturbations, counterfactual regression triage, and grader-drift checks. The initial claim is not that EvalMedic solves causal debugging in general. It is:</p>
+      <p class="thesis">Given a known controlled perturbation, can EvalMedic identify the responsible component—or abstain when the evidence is ambiguous?</p>
+
+      <div class="metric-grid">
+        <div class="metric"><span class="value">30</span><span class="label mono">deterministic tasks across tool calling, SQL, and file/code</span></div>
+        <div class="metric"><span class="value">5</span><span class="label mono">controlled release conditions, R0 through R4</span></div>
+        <div class="metric"><span class="value">≈300</span><span class="label mono">planned trajectories with two repeats</span></div>
+      </div>
+      <p class="mono">Design targets above are planned validation scope, not reported experimental results.</p>
+
+      <table class="result-table">
+        <thead><tr><th>Condition</th><th>Controlled change</th><th>Known cause</th><th>Diagnostic question</th></tr></thead>
+        <tbody>
+          <tr><td>R0</td><td>Baseline configuration</td><td>None</td><td>What does stable measurement look like?</td></tr>
+          <tr><td>R1</td><td>Swap model/checkpoint only</td><td>Model</td><td>Does the failure persist with the old surrounding stack?</td></tr>
+          <tr><td>R2</td><td>Alter system prompt/scaffold only</td><td>Prompt</td><td>Does the baseline model now reproduce the regression?</td></tr>
+          <tr><td>R3</td><td>Change tool schema or inject runtime errors</td><td>Tool/runtime</td><td>Do recorded old outputs recover performance?</td></tr>
+          <tr><td>R4</td><td>Change rubric/grader and re-score frozen traces</td><td>Evaluator</td><td>Is apparent movement measurement drift?</td></tr>
+        </tbody>
+      </table>
+
+      <h3>What success and failure look like</h3>
+      <ul class="next-list">
+        <li><strong>Root-cause quality:</strong> top-1 accuracy, top-k recall, and regression recall on known perturbations.</li>
+        <li><strong>Honest uncertainty:</strong> abstention rate and calibration when component interactions make causes non-identifiable.</li>
+        <li><strong>Engineering value:</strong> diagnosis latency and number of replay experiments compared with manual investigation.</li>
+        <li><strong>Falsification:</strong> narrow or stop the project if it does not reduce effort beyond competent analysis of existing traces.</li>
+      </ul>
+    </section>
+
+    <section class="project-section">
+      <h2>Counterfactual triage</h2>
+      <p>EvalMedic freezes most of the measurement system, swaps one component at a time, and records whether the regression recovers. The output is an evidence profile rather than a falsely precise causal probability.</p>
+      <pre class="pipeline mono">candidate model + old prompt/tools/runtime/grader
+  → failure persists? model change becomes more plausible
+
+baseline model + new prompt
+  → baseline now fails? prompt/scaffold becomes more plausible
+
+same model/prompt + recorded old tool outputs
+  → performance recovers? tool/runtime contribution becomes more plausible
+
+same frozen traces + old versus new grader
+  → scores recover? evaluator drift becomes more plausible
+
+interactions remain unresolved
+  → abstain and request the next discriminating replay</pre>
+      <p>One-at-a-time replay is not guaranteed causal identification. External state, nondeterminism, and component interactions can make faithful reconstruction impossible. The system must expose those limitations rather than hide them behind a root-cause score.</p>
+    </section>
+
+    <section class="project-section">
+      <h2>Developer surface</h2>
+      <p>The first public repository focuses on typed measurement schemas, reproducible controlled-release fixtures, a minimal triage engine, tests, and a transparent roadmap. The intended interface is small:</p>
+      <pre class="pipeline mono">evalmedic diagnose runs/release-v12.json
+evalmedic calibrate-grader --old J3 --new J4 --anchors frozen.json
+evalmedic plan --baseline v11 --candidate v12</pre>
+      <p>Inspect AI is the first planned adapter. LangSmith, Braintrust, custom adapters, CI integration, and an evidence UI follow only after the core diagnosis algorithms prove useful.</p>
+      <div class="project-links mono"><a href="https://github.com/ShugeLei/evalmedic">browse the public repository</a></div>
+    </section>
+
+    <section class="project-section">
+      <h2>Build sequence</h2>
+      <table class="result-table">
+        <thead><tr><th>Release</th><th>Scope</th><th>Claim to earn</th></tr></thead>
+        <tbody>
+          <tr><td>V0.1</td><td>Canonical schema, controlled perturbations, triage, grader drift</td><td>Known changes can be diagnosed or safely abstained on.</td></tr>
+          <tr><td>V0.2</td><td>Adaptive subset selection and sequential stopping</td><td>Regression recall can be preserved with lower evaluation cost.</td></tr>
+          <tr><td>V0.3</td><td>Failure clustering and benchmark promotion/merge/retire</td><td>Production failures improve coverage without uncontrolled suite growth.</td></tr>
+          <tr><td>V1.0</td><td>Additional adapters, CI integration, evidence UI</td><td>The layer is useful beyond a controlled research prototype.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="project-section">
+      <h2>What this project is testing</h2>
+      <p>The broader research idea is that an evaluation stack is itself a measurement instrument. It must be versioned, calibrated, diagnosed, and maintained—not merely executed.</p>
+      <p><strong>EvalMedic will be presented first as an engineering system.</strong> Claims of academic novelty will wait for a dedicated related-work review and empirical results. The public roadmap keeps proposals, implemented functionality, and measured findings visibly separate.</p>
+    </section>
+
+    <div class="back mono"><a href="../index.html#research">← back to selected research</a></div>
+  </main>
+
+  <footer><div class="footer-row mono"><span>© 2026 Shuge Lei</span><span>AI evaluation &amp; agent reliability</span></div></footer>
+</div>
+</body>
+</html>
