@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trusted-Agent Sentinel Evals — Shuge Lei</title>
+<meta name="description" content="Partial-white-box evaluation of multi-agent collusion using trusted honest agents as internal security sentinels.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Can Honest Agents Detect Collusion Around Them?">
+<meta property="og:description" content="A partial-white-box evaluation study of multi-agent collusion, observability boundaries, trusted-agent sentinel signals, and intervention calibration.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+  .project-hero { padding: 58px 0 42px; }
+  .project-kicker { color: var(--link); text-transform: uppercase; margin-bottom: 14px; }
+  .project-hero h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.08; font-weight: 500; letter-spacing: -0.015em; }
+  .project-deck { margin-top: 16px; color: var(--ink-soft); font-size: 1.08rem; max-width: 56ch; }
+  .project-links { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 24px; }
+  .status-pill { display: inline-block; margin-top: 22px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-soft); }
+  .project-section { padding: 34px 0; border-top: 1px solid var(--line); }
+  .project-section h2 { font-size: 1.45rem; font-weight: 500; margin-bottom: 14px; }
+  .project-section h3 { font-size: 1.06rem; font-weight: 500; margin: 22px 0 7px; }
+  .project-section p { color: var(--ink-soft); margin-top: 10px; }
+  .project-section p strong { color: var(--ink); font-weight: 500; }
+  .thesis { font-size: 1.24rem; line-height: 1.5; color: var(--ink) !important; border-left: 2px solid var(--link); padding-left: 18px; margin: 22px 0 4px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 24px 0; }
+  .metric { border: 1px solid var(--line); padding: 16px; border-radius: 4px; background: rgba(255,255,255,0.35); }
+  .metric .value { display: block; font-size: 1.85rem; line-height: 1.1; color: var(--ink); font-weight: 500; }
+  .metric .label { display: block; margin-top: 7px; color: var(--ink-soft); line-height: 1.35; }
+  .finding { margin: 22px 0; }
+  .finding-no { color: var(--link); text-transform: uppercase; }
+  .finding h3 { margin-top: 5px; font-size: 1.18rem; }
+  .figure { margin: 26px 0; }
+  .figure img { width: 100%; display: block; border: 1px solid var(--line); border-radius: 3px; background: white; }
+  .figure figcaption { margin-top: 8px; color: var(--ink-soft); line-height: 1.45; }
+  .pipeline { margin: 20px 0; padding: 18px; border: 1px solid var(--line); background: #fff; border-radius: 4px; white-space: pre-wrap; color: var(--ink-soft); line-height: 1.5; overflow-x: auto; }
+  .result-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.9rem; }
+  .result-table th, .result-table td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .result-table th { color: var(--ink-soft); font-weight: 500; }
+  .next-list { margin: 12px 0 0 22px; color: var(--ink-soft); }
+  .next-list li { margin: 8px 0; }
+  .back { margin: 28px 0 56px; }
+  @media (max-width: 640px) { .metric-grid { grid-template-columns: 1fr; } .result-table { font-size: 0.78rem; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="header-row">
+      <a class="wordmark" href="../index.html">Shuge Lei</a>
+      <nav class="mono"><a href="../index.html#research">research</a><a href="../index.html#writing">writing</a></nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="project-hero">
+      <div class="project-kicker mono">multi-agent security · evaluation research · 2026</div>
+      <h1>Can Honest Agents Detect Collusion Around Them?</h1>
+      <p class="project-deck">Partial-white-box monitoring via trusted-agent internal states. A benchmark extension that asks what happens when the suspicious agents are exactly the components whose internals we cannot inspect.</p>
+      <div class="project-links mono">
+        <a href="https://github.com/ShugeLei/collusion-early-warning">github repo</a>
+        <a href="#paper">working paper</a>
+        <a href="#results">results</a>
+      </div>
+      <span class="status-pill mono">preprint in preparation · public code release</span>
+    </div>
+
+    <section class="project-section">
+      <h2>The problem</h2>
+      <p>Activation-based monitoring can be extremely strong when a defender has white-box access to the agents carrying a malicious objective. Real multi-agent systems are often heterogeneous: an organization may own one open-weight model while it collaborates with closed APIs, third-party agents, or models controlled by another organization.</p>
+      <p class="thesis">If the suspicious agents are opaque, can the agents we trust act as security sensors for the ones we do not?</p>
+      <p>I study this question on the public NARCBench Core activation release. The project begins by reproducing the benchmark exactly, then progressively removes observability and asks what security signal remains.</p>
+    </section>
+
+    <section class="project-section" id="results">
+      <h2>Three findings</h2>
+
+      <div class="finding">
+        <span class="finding-no mono">Finding 1 · locality</span>
+        <h3>The “perfect” white-box signal is local.</h3>
+        <p>On the current public Core release, the official colluder-trained probe is perfectly separable from the first public round when the colluders themselves are visible. The Round-1 decision score is strongly positive for colluders (+17.68) but nearly identical for honest observers inside collusion (−19.36) and matched controls (−19.39).</p>
+        <p>Once colluder activations are removed, the same deception direction falls to approximately chance on honest peers: AUROC <strong>0.491 / 0.531 / 0.550</strong> over R1/R2/R3.</p>
+      </div>
+
+      <figure class="figure">
+        <img src="https://raw.githubusercontent.com/ShugeLei/collusion-early-warning/main/outputs/figures/observability_comparison_layer28.png" alt="Comparison of colluder-visible and honest-observer-only detection">
+        <figcaption class="mono">Fig. 1 — The original deception direction is useful when colluders are visible, but does not transfer to honest observers.</figcaption>
+      </figure>
+
+      <div class="finding">
+        <span class="finding-no mono">Finding 2 · observability + time</span>
+        <h3>Trusted honest agents carry a different environmental signal.</h3>
+        <p>I train a new linear sentinel using <strong>only hidden activations from agents that remain honest in both collusion and control conditions</strong>. The classifier asks a different question: “Am I operating inside a collusive environment?”</p>
+        <p>With one fixed sentinel direction, AUROC rises from <strong>0.806 in Round 1</strong> to <strong>0.917 in Round 3</strong>. The R1→R3 gain is +0.111 with a scenario-paired bootstrap 95% CI of approximately [0.028, 0.201]. Prompt-style-matched sensitivity analysis remains above chance.</p>
+        <p>Descriptive exposure analysis is consistent with an interaction-induced signal: zero-exposure honest observers are near chance, while observations following more verified colluder messages become substantially more separable. This pattern is predictive, not mechanistic or causal evidence.</p>
+      </div>
+
+      <figure class="figure">
+        <img src="https://raw.githubusercontent.com/ShugeLei/collusion-early-warning/main/outputs/figures/fixed_sentinel_temporal_layer28.png" alt="Fixed sentinel AUROC over interaction rounds">
+        <figcaption class="mono">Fig. 2 — The same fixed honest-observer sentinel becomes more informative as interaction continues.</figcaption>
+      </figure>
+
+      <div class="finding">
+        <span class="finding-no mono">Finding 3 · actionability</span>
+        <h3>Detection quality is not intervention quality.</h3>
+        <p>The sentinel ranks collusive trajectories well, but deployment requires a stable threshold. I therefore evaluate two operational metrics: <strong>TFIR</strong>, the fraction of benign trajectories interrupted at least once before the final decision, and <strong>PIC</strong>, the fraction of collusive trajectories caught before the final decision.</p>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric"><span class="value">0.917</span><span class="label mono">R3 sentinel AUROC</span></div>
+        <div class="metric"><span class="value">90.3%</span><span class="label mono">collusion caught before final decision · PIC</span></div>
+        <div class="metric"><span class="value">25.8%</span><span class="label mono">benign workflows interrupted · TFIR under a 5% target policy</span></div>
+      </div>
+
+      <p>A nominal 5% false-intervention policy transports to <strong>25.8% TFIR</strong> on held-out domains while catching <strong>90.3% PIC</strong>. A stricter cross-fitted calibration removes false interventions only by making the policy effectively inert: at the same nominal 5% setting, TFIR = 0% and PIC = 0% under the prespecified empirical-rank scheme.</p>
+      <p>The conclusion is deliberately narrow: the sentinel has a strong ranking signal, but the current small-data held-out-domain setting does not provide a sufficiently stable tail margin for low-false-intervention gating. This does not prove every calibration method must fail.</p>
+
+      <figure class="figure">
+        <img src="https://raw.githubusercontent.com/ShugeLei/collusion-early-warning/main/outputs/figures/security_utility_frontier_layer28.png" alt="Security utility frontier comparing trusted sentinel and full white-box monitoring">
+        <figcaption class="mono">Fig. 3 — Partial observability recovers detection signal, but at a higher false-intervention cost than full white-box monitoring.</figcaption>
+      </figure>
+    </section>
+
+    <section class="project-section">
+      <h2>Evaluation design</h2>
+      <p>The point of the project is not to build a more complicated classifier. It is to stress-test what a benchmark result means when the deployment threat model changes.</p>
+      <table class="result-table">
+        <thead><tr><th>Experiment</th><th>Question</th><th>What it revealed</th></tr></thead>
+        <tbody>
+          <tr><td>Baseline reproduction</td><td>Can I reproduce NARCBench exactly?</td><td>Yes: all official Core aggregation methods reproduced at 1.00 AUROC on the audited public release.</td></tr>
+          <tr><td>Temporal probe</td><td>When does the full-white-box signal emerge?</td><td>It is saturated from Round 1; time is not the limiting dimension under full observability.</td></tr>
+          <tr><td>Role-source decomposition</td><td>Where does perfect separation live?</td><td>Primarily in agents explicitly carrying collusive intent.</td></tr>
+          <tr><td>Hide colluders</td><td>Does the original signal propagate to honest peers?</td><td>No: the original deception direction is near chance.</td></tr>
+          <tr><td>Sentinel probe</td><td>Do honest observers contain a different environmental signal?</td><td>Yes: 0.806→0.917 AUROC with a fixed probe.</td></tr>
+          <tr><td>Runtime intervention</td><td>Can high AUROC support safe gating?</td><td>Not with the tested threshold transport: target 5% TFIR becomes 25.8% held-out TFIR.</td></tr>
+          <tr><td>Cross-fitted calibration</td><td>Is in-sample optimism the whole problem?</td><td>No simple fix: conservative calibration becomes safe only by collapsing coverage under the prespecified scheme.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="project-section">
+      <h2>Harness implication</h2>
+      <p>The resulting design is not “hidden state → classifier → block.” Instead, trusted open-weight agents become one internal telemetry source inside a broader control plane:</p>
+      <pre class="pipeline mono">opaque / external agents
+        ↓ interaction
+trusted open-weight honest agent
+        ↓ hidden-state telemetry
+sentinel risk model
+        ↓
+distribution / drift monitor
+        ↓
+calibration layer
+        ↓
+policy gate
+   ↙            ↘
+continue     escalate / restrict / review</pre>
+      <p>The broader lesson is that multi-agent security is an <strong>observability-and-control problem</strong>, not merely a detection problem.</p>
+    </section>
+
+    <section class="project-section" id="paper">
+      <h2>Working paper</h2>
+      <p><strong>Can Honest Agents Detect Collusion Around Them? Partial White-Box Monitoring via Trusted-Agent Internal States</strong></p>
+      <p>The current report is being prepared as an arXiv preprint. The public repository contains the full experiment chain, saved predictions, figures, tests, and methodology notes.</p>
+      <div class="project-links mono"><a href="https://github.com/ShugeLei/collusion-early-warning">code + results</a></div>
+
+      <h3>Experiments to add before the stronger paper version</h3>
+      <ul class="next-list">
+        <li><strong>Text-only honest-observer baseline:</strong> compare visible messages/history against hidden activations under the same leave-domain-out protocol.</li>
+        <li><strong>Multi-backbone replication:</strong> repeat the sentinel analysis on additional released NARCBench activation sets.</li>
+        <li><strong>Cross-benchmark / real heterogeneous validation:</strong> test an actual opaque-agent + trusted-open-weight-agent graph.</li>
+        <li><strong>Causal exposure intervention:</strong> manipulate what the honest observer sees while holding other factors fixed.</li>
+      </ul>
+    </section>
+
+    <section class="project-section">
+      <h2>What I learned as an evaluator</h2>
+      <p>This project began with a seemingly simple benchmark question — “how early can collusion be detected?” — and the first result made that question uninteresting: full-white-box detection was already perfect in Round 1. The useful work came from interrogating <em>why</em> the benchmark saturated, changing the threat model, adding controls, and following the failure modes all the way from AUROC to runtime policy.</p>
+      <p>For me, that is the core evaluation lesson: <strong>a benchmark score is only useful if we understand what signal it measures, what assumptions make it possible, and whether the result survives the conditions that matter in deployment.</strong></p>
+    </section>
+
+    <div class="back mono"><a href="../index.html#research">← back to selected research</a></div>
+  </main>
+
+  <footer><div class="footer-row mono"><span>© 2026 Shuge Lei</span><span>multi-agent safety &amp; evaluations</span></div></footer>
+</div>
+</body>
+</html>
